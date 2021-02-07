@@ -20,6 +20,7 @@ namespace report
             InitializeComponent();
         }
 
+        public const string FILTER = "Nombre Departamento";
         private DataSet ds;
 
         private void btnOpen_Click(object sender, EventArgs e)
@@ -37,12 +38,12 @@ namespace report
             string department = "";
             foreach (DataRow row in dt.Rows)
             {
-                if (department == (string)row["Nombre Departamento"])
-                    department = (string)row["Nombre Departamento"];
+                if (department == (string)row[FILTER])
+                    department = (string)row[FILTER];
                 else
                 {
-                    cbFilter.Items.Add(row["Nombre Departamento"]);
-                    department = (string)row["Nombre Departamento"];
+                    cbFilter.Items.Add(row[FILTER]);
+                    department = (string)row[FILTER];
                 }
             }
         }
@@ -65,7 +66,9 @@ namespace report
 
         private void cbFilter_SelectedIndexChanged(object sender, EventArgs e)
         {
-            
+            DataTable dt = ds.Tables[0];
+            string department = cbFilter.GetItemText(cbFilter.SelectedItem);
+            dt.DefaultView.RowFilter = string.Format("[{0}] LIKE '%{1}%'", FILTER, department);
         }
     }
 }
