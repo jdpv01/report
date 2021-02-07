@@ -1,14 +1,6 @@
-﻿using Excel;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System;
 using System.Data;
 using System.Data.OleDb;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace report
@@ -21,6 +13,7 @@ namespace report
         }
 
         public const string FILTER = "Nombre Departamento";
+        public const string TYPE = "Tipo: Municipio / Isla / Área no municipalizada";
         private DataSet ds;
 
         private void btnOpen_Click(object sender, EventArgs e)
@@ -46,6 +39,25 @@ namespace report
                     department = (string)row[FILTER];
                 }
             }
+            generateChart();
+        }
+
+        private void generateChart()
+        {
+            DataTable dt = ds.Tables[0];
+            int municipios = 0, islas = 0, noMun = 0;
+            foreach (DataRow row in dt.Rows)
+            {
+                if ("Municipio" == (string)row[TYPE])
+                    municipios++;
+                else if ("Isla" == (string)row[TYPE])
+                    islas++;
+                else
+                    noMun++;
+            }
+            chart1.Series["Series1"].Points.AddXY("Municipio", municipios);
+            chart1.Series["Series1"].Points.AddXY("Isla", islas);
+            chart1.Series["Series1"].Points.AddXY("Área no municipalizada", noMun);
         }
 
         private DataView importData(string fileName)
