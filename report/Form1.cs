@@ -20,6 +20,8 @@ namespace report
             InitializeComponent();
         }
 
+        private DataSet ds;
+
         private void btnOpen_Click(object sender, EventArgs e)
         {
             OpenFileDialog ofd = new OpenFileDialog
@@ -30,6 +32,18 @@ namespace report
             if (ofd.ShowDialog() == DialogResult.OK)
             {
                 dataGridView1.DataSource = importData(ofd.FileName);
+            }
+            DataTable dt = ds.Tables[0];
+            string department = "";
+            foreach (DataRow row in dt.Rows)
+            {
+                if (department == (string)row["Nombre Departamento"])
+                    department = (string)row["Nombre Departamento"];
+                else
+                {
+                    cbFilter.Items.Add(row["Nombre Departamento"]);
+                    department = (string)row["Nombre Departamento"];
+                }
             }
         }
 
@@ -43,7 +57,7 @@ namespace report
             {
                 SelectCommand = query
             };
-            DataSet ds = new DataSet();
+            ds = new DataSet();
             adapter.Fill(ds);
             connector.Close();
             return ds.Tables[0].DefaultView;
